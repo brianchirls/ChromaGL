@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+	<head>
+		<meta charset="UTF-8">
+		<title>Chroma GL: Pre-Calculated video</title>
+		<style type="text/css">
+		
+		canvas {
+			border: red solid 1px;
+		}
+		
+		</style>
+		<script type="text/javascript" src="../webgl-debug.js"></script>
+		<script type="text/javascript" src="../chromagl.js"></script>
+	</head>
+	<body>
+		<video src="/okgo/videos/wtf_greenscreen_alpha_sm.ogg" controls preload width="500" height="360" id="image"></video>
+		<canvas width="480" height="270" id="cnvs"></canvas>
+		<br/><input type="checkbox" id="wtf" onchange="wtf(this)"/> WTF?
+	</body>
+	<script type="text/javascript">
+	var clearScreen = true;
+	function wtf(target) {
+		clearScreen = !target.checked;
+	}
+
+	var chroma;
+	var canvas = document.getElementById('cnvs');
+	function draw() {
+		//clear canvas
+		
+		//draw background
+		
+		//draw logos (tracked)
+		
+		chroma.refresh(clearScreen);
+	}
+
+	window.addEventListener('load',function() {
+		chroma = new ChromaGL('image', canvas);
+		chroma.addChromaKey('pre', 0);
+		//chroma.go();
+
+		setInterval(draw, 20);
+
+		/*
+			weird bug in video driver on mac causes errors if you leave the page alone for a while and come back.  This might get around it
+		*/
+		window.onfocus = draw;
+	}, false);
+	</script>
+</html>
