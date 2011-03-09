@@ -24,14 +24,16 @@ For a video with a green background, on a page with one `<video>` element and on
 
 API
 ---
-`ChromaGL(source, target, options)`: Object constructor  
+`ChromaGL(source, target, options)`  
+Object constructor
+
 - source = canvas/img/video object (or selector string)
 - target = canvas object (or selector string)
 - options (not required):
-	- clip = object containing `x`, `y`, `width` and `height` representing clipping area (all parameters are 0 to 1, as factor of full image dimensions)
-	- alpha = object containing `x`, `y`, `width` and `height` representing part of image containing alpha mask
-	- source = object containing `x`, `y`, `width` and `height` representing part of image containing source to be keyed (for use with alpha)
-	- errorCallback: callback function to be called in case of error
+	* clip = object containing `x`, `y`, `width` and `height` representing clipping area (all parameters are 0 to 1, as factor of full image dimensions)
+	* alpha = object containing `x`, `y`, `width` and `height` representing part of image containing alpha mask
+	* source = object containing `x`, `y`, `width` and `height` representing part of image containing source to be keyed (for use with alpha)
+	* errorCallback: callback function to be called in case of error
 
 `.hasWebGL()`: returns true if browser supports WebGL, else false  
 `.source(source)`: Set source containing video or image to key. Can be changed after object creation.  
