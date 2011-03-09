@@ -38,6 +38,7 @@ API
 
 
 `.source(source)`: Set source containing video or image to key. Can be changed after object creation.  
+
 - source = canvas/img/video object (or tag/id string)
 
 
