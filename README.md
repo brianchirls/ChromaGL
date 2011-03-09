@@ -30,10 +30,10 @@ API
 - source = canvas/img/video object (or selector string)
 - target = canvas object (or selector string)
 - options (not required):
-	* clip = object containing `x`, `y`, `width` and `height` representing clipping area (all parameters are 0 to 1, as factor of full image dimensions)
-	* alpha = object containing `x`, `y`, `width` and `height` representing part of image containing alpha mask
-	* source = object containing `x`, `y`, `width` and `height` representing part of image containing source to be keyed (for use with alpha)
-	* errorCallback: callback function to be called in case of error
+	* `clip` = object containing `x`, `y`, `width` and `height` representing clipping area (all parameters are 0 to 1, as factor of full image dimensions)
+	* `alpha` = object containing `x`, `y`, `width` and `height` representing part of image containing alpha mask
+	* `source` = object containing `x`, `y`, `width` and `height` representing part of image containing source to be keyed (for use with alpha)
+	* `errorCallback`: callback function to be called in case of error
 
 `.hasWebGL()`: returns true if browser supports WebGL, else false
 
@@ -55,12 +55,12 @@ API
 	- string: 'blue' or 'green' color preset
 	- array of 3 numbers: RGB color
 	- object: params for color/pre-rendered key
-		- mode (required): 'pre' for pre-computed or 'chroma' for color-based
-		- color (required): 'blue' or 'green' or array of 3 numbers (chroma mode only)
-		- threshold: Euclidean distance cutoff (chroma mode only)
-		- fuzzy: float >= 1.0, multiple of threshold as outer limit of feathering (chroma mode only)
-		- source: which channel contains alpha mask. 0 = red, 1 = blue, 2 = green (pre mode only)
-		- channel: select an output channel (overrides `channel` parameter to method)
+		- `mode` (required): 'pre' for pre-computed or 'chroma' for color-based
+		- `color` (required): 'blue' or 'green' or array of 3 numbers (chroma mode only)
+		- `threshold`: Euclidean distance cutoff (chroma mode only)
+		- `fuzzy`: float >= 1.0, multiple of threshold as outer limit of feathering (chroma mode only)
+		- `source`: which channel contains alpha mask. 0 = red, 1 = blue, 2 = green (pre mode only)
+		- `channel`: select an output channel (overrides `channel` parameter to method)
 - channel: select an output channel 0 = red, 1 = blue, 2 = green
 
 
