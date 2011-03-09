@@ -3,6 +3,7 @@ ChromaGL
 Chroma Key video effect in a web page.
 
 Two modes:
+
 - `chroma`: keys out pixels based on color within euclidean distance from target color
 - `pre`: video frame is split in half, containing source image (usually top half) and an alpha mask (usually bottom half).  Eventually will support up to three alpha masks (one in each color channel).
 
