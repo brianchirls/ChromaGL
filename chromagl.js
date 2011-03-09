@@ -89,11 +89,11 @@
 		'	\n' +
 		'	vec4 outputPixel = vec4(pixel);\n' +
 		'	if (targetChannel == 0) {\n' +
-		'		outputPixel.r *= alpha;\n' +
+		'		outputPixel.r = min(outputPixel.r, alpha);\n' +
 		'	} else if (targetChannel == 1) {\n' +
-		'		outputPixel.g *= alpha;\n' +
+		'		outputPixel.g = min(outputPixel.r, alpha);\n' +
 		'	} else if (targetChannel == 2) {\n' +
-		'		outputPixel.b *= alpha;\n' +
+		'		outputPixel.b = min(outputPixel.r, alpha);\n' +
 		'	}\n' +
 		'	return outputPixel; \n' +
 		'}\n' +
@@ -147,7 +147,7 @@
 		'		pixel = vec4(0.0);\n' +
 		'	} else { \n' +
 		'		%keys%\n' +
-		'		pixel.a = min(pixel.r, min(pixel.g, pixel.b));\n' +
+		'		pixel.a = min(alphaPixel.r, min(alphaPixel.g, alphaPixel.b));\n' +
 		'	}\n' +
 		'	gl_FragColor = pixel;\n' +
 		'	//gl_FragColor = alphaPixel;\n' +
