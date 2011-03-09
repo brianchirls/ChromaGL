@@ -16,6 +16,7 @@
 		<video src="/okgo/videos/wtf_greenscreen_alpha_sm.ogg" controls preload width="500" height="360" id="image"></video>
 		<canvas width="480" height="270" id="cnvs"></canvas>
 		<br/><input type="checkbox" id="wtf" onchange="wtf(this)"/> WTF?
+		<p><span id="fps">0</span> frames per second</p>
 	</body>
 	<script type="text/javascript">
 	var clearScreen = true;
@@ -23,9 +24,23 @@
 		clearScreen = !target.checked;
 	}
 
+	var fps = document.getElementById('fps');
+	var frames = 0;
+	var fpsUpdateTime = 0;
+
 	var chroma;
 	var canvas = document.getElementById('cnvs');
 	function draw() {
+		//update frame rate
+		var now = Date.now();
+		var elapsed = now - fpsUpdateTime;
+		if (elapsed >= 2000) {
+			fps.innerHTML = elapsed ? Math.round(1000 * frames / elapsed) : '';
+			fpsUpdateTime = now;
+			frames = 0;
+		}
+		frames++;
+
 		//clear canvas
 		
 		//draw background
