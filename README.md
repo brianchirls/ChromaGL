@@ -24,8 +24,7 @@ For a video with a green background, on a page with one `<video>` element and on
 
 API
 ---
-`ChromaGL(source, target, options)`  
-Object constructor
+`ChromaGL(source, target, options)`: Object constructor
 
 - source = canvas/img/video object (or selector string)
 - target = canvas object (or selector string)
@@ -35,14 +34,20 @@ Object constructor
 	* source = object containing `x`, `y`, `width` and `height` representing part of image containing source to be keyed (for use with alpha)
 	* errorCallback: callback function to be called in case of error
 
-`.hasWebGL()`: returns true if browser supports WebGL, else false  
+`.hasWebGL()`: returns true if browser supports WebGL, else false
+
+
 `.source(source)`: Set source containing video or image to key. Can be changed after object creation.  
 - source = canvas/img/video object (or tag/id string)
 
-`.target(target)`: Set target canvas on which to paint keyed image. Can be changed after object creation.  
+
+`.target(target)`: Set target canvas on which to paint keyed image. Can be changed after object creation.
+
 - target = canvas object (or tag/id string)
 
-`.addChromaKey(keys, channel)`  
+
+`.addChromaKey(keys, channel)`: add one or more chroma key configurations. returns array of key id's, in case you want to remove them later
+
 - keys = array or single of key parameters, any of the following formats:
 	- string: 'pre' = pre-computed alpha channel, defaults to 
 	- string: 'blue' or 'green' color preset
@@ -56,31 +61,43 @@ Object constructor
 		- channel: select an output channel (overrides `channel` parameter to method)
 - channel: select an output channel 0 = red, 1 = blue, 2 = green
 
-returns array of key id's, in case you want to remove them later
 
 `.removeChromaKey(id)`  
+
 - id = single or array of integers of keys to delete
 
-`.setThreshold(id, threshold, fuzzy)`: Change chroma key parameters for distance threshold  
+
+`.setThreshold(id, threshold, fuzzy)`: Change chroma key parameters for distance threshold
+
 - id = key to modify
 - threshold = Euclidean distance cutoff
 - fuzzy (optional) = float >= 1.0, multiple of threshold as outer limit of feathering
 
+
 `.go(frameRate, play)`: Start a draw loop that updates and paints keyed image to canvas for every frame  
+
 - frameRate (optional) = frames per second
 - play (optional) = true/false, should we start playing the video
 
+
 `.stop(pause)`: Stop draw loop  
+
 - pause (optional) = true/false, should we pause the video
+
   
 `.refresh(clear, noThrottle)`: Update frame from video and paint to canvas  
+
 - clear: true/false whether to clear the canvas first
 - noThrottle: true/false. Unless true, refresh will only paint canvas if there is a new frame or chroma parameters have changed
+
   
 `.paint()`: Paints current video frame to target canvas  
 
+
 `.draw(image, target, channel, invert)`:  Not implemented yet.  Will allow painting of images to canvas using partial alpha masks from different channels
+
 - invert = bool, invert alpha mask
+
 
 Notes
 -----
