@@ -3,11 +3,11 @@
  *
  *  ChromaGL - Javascript Library for Video Chroma Key (blue/green-screen effect) using WebGL
  *  
- *  Developer: Brian Chirls http://chirls.com
+ *  Original Author: Brian Chirls http://chirls.com
  *  GitHub: https://github.com/brianchirls/ChromaGL
  *  License: MIT
  *  
- *  Copyright (c) 2011 Brian Chirls
+ *  Copyright (c) 2011 Mozilla Foundation
  *  
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -147,7 +147,7 @@
 		'		pixel = vec4(0.0);\n' +
 		'	} else { \n' +
 		'		%keys%\n' +
-		'		pixel.a = min(alphaPixel.r, min(alphaPixel.g, alphaPixel.b));\n' +
+		'		pixel.a = min(pixel.r, min(pixel.g, pixel.b));\n' +
 		'	}\n' +
 		'	gl_FragColor = pixel;\n' +
 		'	//gl_FragColor = alphaPixel;\n' +
@@ -790,7 +790,7 @@
 	};
 	
 	ChromaGL.prototype.paint = function() {
-		if (this.alphaShader) {
+		if (this.alphaShader && this._media[this._data.ready]) {
 			var gl = this._context;
 			
 			//draw alpha channels to frame buffer

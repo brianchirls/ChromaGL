@@ -5,8 +5,27 @@
 		<title>Chroma GL: Pre-Calculated video</title>
 		<style type="text/css">
 		
+		#container {
+			position: relative;
+			width: 480px;
+			height: 270px;
+			display: inline-block;
+		}
+		
+		#container > canvas,
+		#container > iframe {
+			position: absolute;
+			top: 0;
+		}
+		
+		#container > iframe {
+			width: 480px;
+			height: 270px;
+		}
+		
 		canvas {
 			border: red solid 1px;
+			pointer-events: none;
 		}
 		
 		</style>
@@ -14,7 +33,10 @@
 	</head>
 	<body>
 		<video src="/okgo/videos/wtf_greenscreen_alpha_sm.ogg" controls preload width="500" height="360" id="image"></video>
-		<canvas width="480" height="270" id="cnvs"></canvas>
+		<div id="container">
+			<iframe src="http://xkcd.com" frameborder="0"></iframe>
+			<canvas width="480" height="270" id="cnvs"></canvas>
+		</div>
 		<br/><input type="checkbox" id="wtf" onchange="wtf(this)"/> WTF?
 		<p><span id="fps">0</span> frames per second</p>
 	</body>
