@@ -50,7 +50,6 @@
 		'\n' +
 		'uniform vec4 sourceArea;\n' +
 		'uniform vec4 alphaArea;\n' +
-		'uniform vec4 clipArea;\n' +
 		'\n' +
 		'void main(void) {\n' +
 		'	gl_Position = vec4(position, 1.0);\n' +
@@ -69,7 +68,6 @@
 		'varying vec2 vAlphaCoord;\n' +
 		'\n' +
 		'uniform sampler2D source;\n' +
-		'uniform vec4 clipArea;\n' +
 		'\n' +
 		'vec4 sourcePixel;\n' +
 		'vec4 alphaPixel;\n' +
@@ -135,15 +133,8 @@
 		'#endif\n' +
 		'	alphaPixel = texture2D(source, vAlphaCoord);\n' +
 		'	vec4 pixel = vec4(1.0);\n' +
-		'	if (vSourceCoord.x < clipArea.x || \n' +
-		'		vSourceCoord.y < clipArea.y || \n' +
-		'		vSourceCoord.x > clipArea.z || \n' +
-		'		vSourceCoord.y > clipArea.w) { \n' +
-		'		pixel = vec4(0.0);\n' +
-		'	} else { \n' +
-		'		%keys%\n' +
-		'		pixel.a = min(pixel.r, min(pixel.g, pixel.b));\n' +
-		'	}\n' +
+		'	%keys%\n' +
+		'	pixel.a = min(pixel.r, min(pixel.g, pixel.b));\n' +
 		'	gl_FragColor = pixel;\n' +
 		'	//gl_FragColor = alphaPixel;\n' +
 		'	//gl_FragColor = texture2D(source, vTexCoord);\n' +
@@ -163,7 +154,6 @@
 		'\n' +
 		'uniform sampler2D source;\n' +
 		'uniform sampler2D alpha;\n' +
-		'uniform vec4 clipArea;\n' +
 		'uniform vec4 alphaChannel;\n' +
 		'\n' +
 		'void main(void) {\n' +
@@ -174,19 +164,11 @@
 		'#else\n' +
 		'		pixel = texture2D(source, vTexCoord);\n' +
 		'#endif\n' +
-		'	if (vSourceCoord.x < clipArea.x || \n' +
-		'		vSourceCoord.y < clipArea.y || \n' +
-		'		vSourceCoord.x > clipArea.z || \n' +
-		'		vSourceCoord.y > clipArea.w) { \n' +
-		'		pixel.a = 0.0;\n' +
-		'	} else { \n' +
-		'		alphaPixel = texture2D(alpha, vec2(vTexCoord.x, 1.0 - vTexCoord.y));\n' +
-				/*
-					set this vector because a dot product should be MUCH faster
-					in a shader than a big "if" statement
-				*/
-		'		pixel.a = dot(alphaPixel, alphaChannel);\n' +
-		'	}\n' +
+		'	alphaPixel = texture2D(alpha, vec2(vTexCoord.x, 1.0 - vTexCoord.y));\n' +
+			/*
+				set this vector because a dot product should be MUCH faster
+				in a shader than a big "if" statement				*/
+		'	pixel.a = dot(alphaPixel, alphaChannel);\n' +
 		'	gl_FragColor = pixel;\n' +
 		'	//gl_FragColor = alphaPixel;\n' +
 		'	//gl_FragColor = vec4(alphaPixel.r, vTexCoord.y, vTexCoord.y, 1.0);\n' +
@@ -325,15 +307,9 @@
 		var alphaY = this.alphaY;
 		var alphaWidth = this.alphaWidth;
 		var alphaHeight = this.alphaHeight;
-		
-		var clipX = this.clipX;
-		var clipY = this.clipY;
-		var clipWidth = this.clipWidth;
-		var clipHeight = this.clipHeight;
-		
+
 		this.alphaShader.set_sourceArea(sourceX, sourceY, sourceWidth, sourceHeight);
 		this.alphaShader.set_alphaArea(alphaX, alphaY, alphaWidth, alphaHeight);
-		this.alphaShader.set_clipArea(clipX, clipY, clipX + clipWidth, (clipY + clipHeight));
 		
 		var painterSrc = fragmentShaderPaint;
 		if (hasPreCalc) {
@@ -342,7 +318,6 @@
 		this.paintShader = new ShaderProgram(gl, vertexShader, painterSrc);
 		this.paintShader.set_sourceArea(sourceX, sourceY, sourceWidth, sourceHeight);
 		this.paintShader.set_alphaArea(alphaX, alphaY, alphaWidth, alphaHeight);
-		this.paintShader.set_clipArea(clipX, clipY, clipX + clipWidth, (clipY + clipHeight));
 		
 	}
 	
@@ -501,6 +476,14 @@
 			}
 		}
 
+		/* clipping */
+		if (this.clipping) {
+			gl.enable(gl.SCISSOR_TEST);
+			gl.scissor(this.clipX * gl.viewportWidth, ((1 - this.clipY - this.clipHeight) * gl.viewportHeight), this.clipWidth * gl.viewportWidth, this.clipHeight * gl.viewportHeight);
+		} else {
+			gl.disable(gl.SCISSOR_TEST);
+		}
+
 		/* do this every time */
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 		gl.enable(gl.BLEND);
@@ -511,6 +494,11 @@
 		var err = gl.getError();
 		if (err) {
 			console.log('draw error: ' + err);
+		}
+		
+		//disable this again, in case someone else is using the same context
+		if (this.clipping) {
+			gl.disable(gl.SCISSOR_TEST);
 		}
 	}
 
@@ -583,6 +571,7 @@
 		this.clipY = clip.y || 0;
 		this.clipWidth = clip.width || 1 - this.clipX;
 		this.clipHeight = clip.height || 1 - this.clipY;
+		this.clipping = (this.clipX || this.clipY || this.clipWidth < 1 || this.clipHeight < 1);
 		
 		//todo: scale (x and y) option?
 		
@@ -908,7 +897,7 @@
 			key.clipX = clip.x || 0;
 			key.clipY = clip.y || 0;
 			key.clipWidth = clip.width || this._media[this._data.width] - this.clipX;
-			this.clipHeight = clip.height || this._media[this._data.height] - this.clipY;
+			key.clipHeight = clip.height || this._media[this._data.height] - this.clipY;
 			
 			ids.push(id);
 			this._keys[id] = key;
