@@ -85,15 +85,14 @@
 		'	} else { \n' +
 		'		alpha = 0.0;\n' +
 		'	}\n' +
-		'	//alpha = smoothstep(0.0,1.0,alpha);\n' +
 		'	\n' +
 		'	vec4 outputPixel = vec4(pixel);\n' +
 		'	if (targetChannel == 0) {\n' +
 		'		outputPixel.r = min(outputPixel.r, alpha);\n' +
 		'	} else if (targetChannel == 1) {\n' +
-		'		outputPixel.g = min(outputPixel.r, alpha);\n' +
+		'		outputPixel.g = min(outputPixel.g, alpha);\n' +
 		'	} else if (targetChannel == 2) {\n' +
-		'		outputPixel.b = min(outputPixel.r, alpha);\n' +
+		'		outputPixel.b = min(outputPixel.b, alpha);\n' +
 		'	}\n' +
 		'	return outputPixel; \n' +
 		'}\n' +
