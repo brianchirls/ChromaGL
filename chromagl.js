@@ -74,6 +74,12 @@
 		'vec4 sourcePixel;\n' +
 		'vec4 alphaPixel;\n' +
 		'\n' +
+		'const mat3 yuv = mat3(\n' +
+		'	54.213, 182.376, 18.411,\n' +
+		'	-54.213, -182.376, 236.589,\n' +
+		'	200.787, -182.376, -18.411\n' +
+		');\n' +
+		'\n' +
 		'vec4 preAlpha(int sourceChannel, int targetChannel, vec4 pixel) {\n' +
 		'	float alpha;\n' +
 		'	if (sourceChannel == 0) {\n' +
@@ -97,18 +103,12 @@
 		'	return outputPixel; \n' +
 		'}\n' +
 		'\n' +
-		'\n' +
 		'vec4 distAlpha(int targetChannel, vec3 target, float threshold, float fuzzy, vec4 pixel) {\n' +
-		'	float distance2, sum, x, y, z, x1, y1, z1, alpha;\n' +
+		'	float distance2, sum, alpha;\n' +
 		'	\n' +
-		'	x = 255.0 * (0.2126 * sourcePixel.r + 0.7152 * sourcePixel.g + 0.0722 * sourcePixel.b);\n' +
-		'	y = 255.0 * (-0.2126 * sourcePixel.r + -0.7152 * sourcePixel.g + 0.9278 * sourcePixel.b);\n' +
-		'	z = 255.0 * (0.7874 * sourcePixel.r + -0.7152 * sourcePixel.g + -0.0722 * sourcePixel.b);\n' +
-		'	x1 = x - target.x;\n' +
-		'	y1 = y - target.y;\n' +
-		'	z1 = z - target.z;\n' +
+		'	vec3 yuvColorDiff = sourcePixel.rgb * yuv - target;\n' +
 		'	\n' +
-		'	distance2 = x1 * x1 + y1 * y1 + z1 * z1;\n' +
+		'	distance2 = yuvColorDiff.x * yuvColorDiff.x + yuvColorDiff.y * yuvColorDiff.y + yuvColorDiff.z * yuvColorDiff.z;\n' +
 		'	\n' +
 		'	alpha = smoothstep(threshold, threshold * fuzzy, distance2);\n' +
 		'	\n' +
