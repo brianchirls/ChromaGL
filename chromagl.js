@@ -133,11 +133,11 @@
 		'}\n' +
 		'\n' +
 		'void main(void) {\n' +
-		'	if (%pre%) {\n' +
+		'#ifdef pre\n' +
 		'		sourcePixel = texture2D(source, vSourceCoord);\n' +
-		'	} else {\n' +
+		'#else\n' +
 		'		sourcePixel = texture2D(source, vTexCoord);\n' +
-		'	}\n' +
+		'#endif\n' +
 		'	alphaPixel = texture2D(source, vAlphaCoord);\n' +
 		'	vec4 pixel = vec4(1.0);\n' +
 		'	if (vSourceCoord.x < clipArea.x || \n' +
@@ -174,22 +174,18 @@
 		'void main(void) {\n' +
 		'	vec4 pixel;\n' +
 		'	vec4 alphaPixel;\n' +
-		'	if ( %pre%) {\n' +
+		'#ifdef pre\n' +
 		'		pixel = texture2D(source, vSourceCoord);\n' +
-		'	} else {\n' +
+		'#else\n' +
 		'		pixel = texture2D(source, vTexCoord);\n' +
-		'	}\n' +
+		'#endif\n' +
 		'	if (vSourceCoord.x < clipArea.x || \n' +
 		'		vSourceCoord.y < clipArea.y || \n' +
 		'		vSourceCoord.x > clipArea.z || \n' +
 		'		vSourceCoord.y > clipArea.w) { \n' +
 		'		pixel.a = 0.0;\n' +
 		'	} else { \n' +
-		'		//if (false && %pre%) {\n' +
-		'		//	alphaPixel = texture2D(alpha, vec2(vAlphaCoord.x, 1.0 - vAlphaCoord.y));\n' +
-		'		//} else {\n' +
-		'			alphaPixel = texture2D(alpha, vec2(vTexCoord.x, 1.0 - vTexCoord.y));\n' +
-		'		//}\n' +
+		'		alphaPixel = texture2D(alpha, vec2(vTexCoord.x, 1.0 - vTexCoord.y));\n' +
 				/*
 					set this vector because a dot product should be MUCH faster
 					in a shader than a big "if" statement
@@ -320,7 +316,9 @@
 		}
 		
 		var fragmentSrc = fragmentShaderAlpha.replace('%keys%', keyFunctions);
-		fragmentSrc = fragmentSrc.replace('%pre%', hasPreCalc ? 'true' : 'false');
+		if (hasPreCalc) {
+			fragmentSrc = "#define pre\n" + fragmentSrc;
+		}
 		this.alphaShader = new ShaderProgram(gl, vertexShader, fragmentSrc);
 		
 		var sourceX = this.sourceX;
@@ -342,7 +340,10 @@
 		this.alphaShader.set_alphaArea(alphaX, alphaY, alphaWidth, alphaHeight);
 		this.alphaShader.set_clipArea(clipX, clipY, clipX + clipWidth, (clipY + clipHeight));
 		
-		var painterSrc = fragmentShaderPaint.replace(/%pre%/g, hasPreCalc ? 'true' : 'false');
+		var painterSrc = fragmentShaderPaint;
+		if (hasPreCalc) {
+			painterSrc = "#define pre\n" + painterSrc;
+		}
 		this.paintShader = new ShaderProgram(gl, vertexShader, painterSrc);
 		this.paintShader.set_sourceArea(sourceX, sourceY, sourceWidth, sourceHeight);
 		this.paintShader.set_alphaArea(alphaX, alphaY, alphaWidth, alphaHeight);
