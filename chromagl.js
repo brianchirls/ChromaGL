@@ -108,7 +108,7 @@
 		'	\n' +
 		'	vec3 yuvColorDiff = sourcePixel.rgb * yuv - target;\n' +
 		'	\n' +
-		'	distance2 = yuvColorDiff.x * yuvColorDiff.x + yuvColorDiff.y * yuvColorDiff.y + yuvColorDiff.z * yuvColorDiff.z;\n' +
+		'	distance2 = dot(yuvColorDiff, yuvColorDiff);\n' +
 		'	\n' +
 		'	alpha = smoothstep(threshold, threshold * fuzzy, distance2);\n' +
 		'	\n' +
