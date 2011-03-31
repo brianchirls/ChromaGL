@@ -169,7 +169,7 @@
 		'uniform sampler2D source;\n' +
 		'uniform sampler2D alpha;\n' +
 		'uniform vec4 clipArea;\n' +
-		'uniform int alphaChannel;\n' +
+		'uniform vec4 alphaChannel;\n' +
 		'\n' +
 		'void main(void) {\n' +
 		'	vec4 pixel;\n' +
@@ -190,20 +190,11 @@
 		'		//} else {\n' +
 		'			alphaPixel = texture2D(alpha, vec2(vTexCoord.x, 1.0 - vTexCoord.y));\n' +
 		'		//}\n' +
-		'		float alpha;\n' +
-		'		if (alphaChannel == 0) {\n' +
-		'			alpha = alphaPixel.r;\n' +
-		'		} else if (alphaChannel == 1) {\n' +
-		'			alpha = alphaPixel.g;\n' +
-		'		} else if (alphaChannel == 2) {\n' +
-		'			alpha = alphaPixel.b;\n' +
-		'		} else if (alphaChannel == 3) {\n' +
-		'			alpha = alphaPixel.a;\n' +
-		'		} else {\n' +
-		'			alpha = 1.0;\n' +
-		'		}\n' +
-		'		//pixel.a = smoothstep(0.0,1.0,alpha);\n' +
-		'		pixel.a = alpha;\n' +
+				/*
+					set this vector because a dot product should be MUCH faster
+					in a shader than a big "if" statement
+				*/
+		'		pixel.a = dot(alphaPixel, alphaChannel);\n' +
 		'	}\n' +
 		'	gl_FragColor = pixel;\n' +
 		'	//gl_FragColor = alphaPixel;\n' +
@@ -494,7 +485,23 @@
 			gl.activeTexture(gl.TEXTURE1);
 			gl.bindTexture(gl.TEXTURE_2D, alphaTexture);
 			if (shader.set_alphaChannel) {
-				shader.set_alphaChannel(channel === undefined ? 3 : channel);
+				//set this vector because a dot product should be MUCH faster in a shader than a big "if" statement
+				//...in theory.
+				switch(channel) {
+					case 0:
+						shader.set_alphaChannel(1, 0, 0, 0);
+						break;
+					case 1:
+						shader.set_alphaChannel(0, 1, 0, 0);
+						break;
+					case 2:
+						shader.set_alphaChannel(0, 0, 1, 0);
+						break;
+					case 3:
+					default:
+						shader.set_alphaChannel(0, 0, 0, 1);
+						break;
+				}
 			}
 		}
 
