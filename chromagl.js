@@ -587,11 +587,11 @@
 		//todo: scale (x and y) option?
 		
 		//todo: put this in a method
-		var source = opts.source || {};
-		this.sourceX = source.x || 0;
-		this.sourceY = source.x || 0;
-		this.sourceWidth = source.width || 1 - this.sourceX;
-		this.sourceHeight = source.height || (0.5 - this.sourceY);
+		var sourceDimensions = opts.source || {};
+		this.sourceX = sourceDimensions.x || 0;
+		this.sourceY = sourceDimensions.x || 0;
+		this.sourceWidth = sourceDimensions.width || 1 - this.sourceX;
+		this.sourceHeight = sourceDimensions.height || (0.5 - this.sourceY);
 		var alpha = opts.alpha || {};
 		this.alphaX = alpha.x || 0;
 		this.alphaY = alpha.y !== undefined ? alpha.y : this.sourceHeight;
@@ -610,7 +610,7 @@
 
 	ChromaGL.prototype.hasWebGL = function() {
 		return !!window.WebGLRenderingContext;
-	}
+	};
 		
 	ChromaGL.prototype.source = function(source) {
 		if (source === undefined) {
