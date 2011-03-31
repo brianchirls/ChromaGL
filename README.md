@@ -119,3 +119,5 @@ To Do
 * Allow external static image as alpha mask?
 * Alternate color spaces (currently uses YUV)
 * Add key mode: luminance
+* Optimize fragment shader.
+* Use scissor for clipping
