@@ -110,11 +110,7 @@
 		'	\n' +
 		'	distance2 = x1 * x1 + y1 * y1 + z1 * z1;\n' +
 		'	\n' +
-		'	if (distance2 < threshold) {\n' +
-		'		alpha = 0.0;\n' +
-		'	} else {\n' +
-		'		alpha = smoothstep(threshold, threshold * fuzzy, distance2);\n' +
-		'	}\n' +
+		'	alpha = smoothstep(threshold, threshold * fuzzy, distance2);\n' +
 		'	\n' +
 		'	vec4 outputPixel = vec4(pixel);\n' +
 		'	if (targetChannel == 0) {\n' +
